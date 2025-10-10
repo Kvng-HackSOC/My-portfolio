@@ -39,3 +39,15 @@ export interface Project {
     technology?: string;
     search?: string;
   }
+
+  export interface MediaItem {
+    id?: number;
+    url: string;
+    publicId: string;
+    format: string;
+    resourceType: 'image' | 'video' | 'raw';
+    bytes: number;
+    width?: number;
+    height?: number;
+    createdAt?: Date;
+  }
