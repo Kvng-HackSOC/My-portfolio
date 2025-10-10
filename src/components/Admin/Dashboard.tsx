@@ -16,14 +16,15 @@ export default function Dashboard() {
   const saveProject = async (project: Partial<Project>) => {
     try {
       if (selectedProject) {
-        // Update existing project
-        updateProject(selectedProject.id, project);
+        // Update existing project - convert number to string
+        updateProject(selectedProject.id.toString(), project);
       } else {
         // Create new project
         const newProject = {
           ...project,
-          id: Date.now().toString(),
-          createdAt: new Date().toISOString(),
+          id: Date.now(),
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
         } as Project;
         addProject(newProject);
       }
@@ -32,16 +33,16 @@ export default function Dashboard() {
       setSelectedProject(null);
       refreshProjects();
     } catch (error) {
-      console.error('Error saving project:', error);
+      console.error('Error saving project:', error instanceof Error ? error.message : 'Unknown error');
     }
   };
 
-  const handleDeleteProject = async (id: string) => {
+  const handleDeleteProject = async (id: number) => {
     if (!confirm('Are you sure you want to delete this project?')) return;
-    deleteProject(id);
+    deleteProject(id.toString());
   };
 
-  const handleMediaUpload = (media: MediaItem) => {
+  const handleMediaUpload = (media: any) => {
     setMediaLibrary([...mediaLibrary, media]);
   };
 
@@ -58,7 +59,7 @@ export default function Dashboard() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
             {mediaLibrary.map((media) => (
               <div key={media.id} className="relative group">
-                {media.type === 'image' ? (
+                {media.resourceType === 'image' ? (
                   <img
                     src={media.url}
                     alt="Media"
@@ -110,12 +111,12 @@ export default function Dashboard() {
                 className="border rounded-lg p-4 flex justify-between items-center"
               >
                 <div>
-                  <h3 className="font-semibold">{project.title}</h3>
+                  <h3 className="font-semibold">{project.name}</h3>
                   <p className="text-sm text-gray-600">{project.category}</p>
                 </div>
                 <div className="flex gap-2">
                   <a
-                    href={project.liveUrl}
+                    href={project.live_url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:text-blue-700"
