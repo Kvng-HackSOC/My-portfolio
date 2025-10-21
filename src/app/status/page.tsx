@@ -21,7 +21,7 @@ export default function StatusPage() {
       setDbStatus(data);
     } catch (error) {
       console.error('Error checking database:', error);
-      setDbStatus({ status: 'error', error: error.message });
+      setDbStatus({ status: 'error', error: error instanceof Error ? error.message : 'Unknown error' });
     } finally {
       setLoading(false);
     }

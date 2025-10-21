@@ -51,6 +51,27 @@ export default function CyberneticCircuit({ containerId }: CyberneticCircuitProp
     });
     const pulseGeometry = new THREE.SphereGeometry(0.02, 8, 8);
     
+    // Find closest nodes
+    const findClosestNodes = (sourceNode: THREE.Mesh, count: number) => {
+      const distances: {node: THREE.Mesh, distance: number}[] = [];
+      
+      nodes.forEach(targetNode => {
+        if (targetNode !== sourceNode) {
+          const distance = sourceNode.position.distanceTo(targetNode.position);
+          distances.push({node: targetNode, distance});
+        }
+      });
+      
+      // Sort by distance and get the closest ones
+      distances.sort((a, b) => a.distance - b.distance);
+      
+      // Return closest nodes (limited by count and maximum distance)
+      return distances
+        .slice(0, count)
+        .filter(item => item.distance < 1.5)
+        .map(item => item.node);
+    };
+    
     // Generate circuit layout
     const createCircuitGrid = () => {
       const gridSize = 5;
@@ -105,27 +126,6 @@ export default function CyberneticCircuit({ containerId }: CyberneticCircuitProp
       }
     };
     
-    // Find closest nodes
-    const findClosestNodes = (sourceNode: THREE.Mesh, count: number) => {
-      const distances: {node: THREE.Mesh, distance: number}[] = [];
-      
-      nodes.forEach(targetNode => {
-        if (targetNode !== sourceNode) {
-          const distance = sourceNode.position.distanceTo(targetNode.position);
-          distances.push({node: targetNode, distance});
-        }
-      });
-      
-      // Sort by distance and get the closest ones
-      distances.sort((a, b) => a.distance - b.distance);
-      
-      // Return closest nodes (limited by count and maximum distance)
-      return distances
-        .slice(0, count)
-        .filter(item => item.distance < 1.5)
-        .map(item => item.node);
-    };
-    
     // Create the circuit
     createCircuitGrid();
     
@@ -145,6 +145,8 @@ export default function CyberneticCircuit({ containerId }: CyberneticCircuitProp
     let mouseY = 0;
     
     function onMouseMove(event: MouseEvent) {
+      if (!container) return;
+      
       // Calculate mouse position relative to the container
       const rect = container.getBoundingClientRect();
       mouseX = ((event.clientX - rect.left) / rect.width) * 2 - 1;
@@ -155,6 +157,8 @@ export default function CyberneticCircuit({ containerId }: CyberneticCircuitProp
     
     // Handle resize
     function handleResize() {
+      if (!container) return;
+      
       const newRect = container.getBoundingClientRect();
       camera.aspect = newRect.width / newRect.height;
       camera.updateProjectionMatrix();

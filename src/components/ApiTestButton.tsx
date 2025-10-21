@@ -1,11 +1,11 @@
-'use client'; // Add this directive at the top of the file
+'use client';
 
 import { useState } from 'react';
 
 export default function ApiTestButton() {
-  const [result, setResult] = useState(null);
+  const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   const testApi = async () => {
     try {
@@ -22,7 +22,7 @@ export default function ApiTestButton() {
       setResult(data);
     } catch (err) {
       console.error('API test error:', err);
-      setError(`Request failed: ${err.message}`);
+      setError(`Request failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
     } finally {
       setLoading(false);
     }
@@ -30,7 +30,7 @@ export default function ApiTestButton() {
 
   return (
     <div className="p-4 border rounded-md">
-      <button 
+      <button
         onClick={testApi}
         disabled={loading}
         className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-blue-300"

@@ -1,11 +1,17 @@
-'use client'; // Add this directive at the top of the file
+'use client';
 
 import { useState, useEffect } from 'react';
 
+interface Project {
+  id: number;
+  title?: string;
+  name?: string;
+}
+
 export default function ProjectsApiTest() {
-  const [projects, setProjects] = useState([]);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -23,7 +29,7 @@ export default function ProjectsApiTest() {
         setError(null);
       } catch (err) {
         console.error('Error fetching projects:', err);
-        setError(`Failed to fetch projects: ${err.message}`);
+        setError(`Failed to fetch projects: ${err instanceof Error ? err.message : 'Unknown error'}`);
       } finally {
         setLoading(false);
       }

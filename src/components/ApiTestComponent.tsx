@@ -1,11 +1,11 @@
-'use client'; // Add this directive at the top of the file
+'use client';
 
 import { useState, useEffect } from 'react';
 
 export default function ApiTestComponent() {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,7 +24,7 @@ export default function ApiTestComponent() {
         setError(null);
       } catch (err) {
         console.error('Error fetching API data:', err);
-        setError(`Failed to fetch data: ${err.message}`);
+        setError(`Failed to fetch data: ${err instanceof Error ? err.message : 'Unknown error'}`);
       } finally {
         setLoading(false);
       }

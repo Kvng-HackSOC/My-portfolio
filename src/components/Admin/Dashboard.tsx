@@ -1,21 +1,28 @@
 'use client'
 
-import React, { useState, useEffect } from 'react';
-import { Project, MediaItem } from '@/types';
+import React, { useState } from 'react';
+import { Project } from '@/types';
 import ProjectForm from '@/components/Admin/ProjectForm';
 import MediaUploader from '@/components/Admin/MediaUploader';
 import { FiPlus, FiEdit2, FiTrash2, FiEye } from 'react-icons/fi';
 import { useProjects } from '@/context/ProjectContext';
 
+// Match the MediaItem interface from MediaUploader
+interface UploadedMedia {
+  id: string;
+  url: string;
+  type: 'image' | 'video';
+}
+
 export default function Dashboard() {
   const { projects, addProject, updateProject, deleteProject, refreshProjects } = useProjects();
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [showProjectForm, setShowProjectForm] = useState(false);
-  const [mediaLibrary, setMediaLibrary] = useState<MediaItem[]>([]);
+  const [mediaLibrary, setMediaLibrary] = useState<UploadedMedia[]>([]);
 
   const saveProject = async (project: Partial<Project>) => {
     try {
-      if (selectedProject) {
+      if (selectedProject && selectedProject.id) {
         // Update existing project - convert number to string
         updateProject(selectedProject.id.toString(), project);
       } else {
@@ -37,12 +44,13 @@ export default function Dashboard() {
     }
   };
 
-  const handleDeleteProject = async (id: number) => {
+  const handleDeleteProject = async (id: number | undefined) => {
+    if (!id) return;
     if (!confirm('Are you sure you want to delete this project?')) return;
     deleteProject(id.toString());
   };
 
-  const handleMediaUpload = (media: any) => {
+  const handleMediaUpload = (media: UploadedMedia) => {
     setMediaLibrary([...mediaLibrary, media]);
   };
 
@@ -59,7 +67,7 @@ export default function Dashboard() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
             {mediaLibrary.map((media) => (
               <div key={media.id} className="relative group">
-                {media.resourceType === 'image' ? (
+                {media.type === 'image' ? (
                   <img
                     src={media.url}
                     alt="Media"
@@ -115,14 +123,16 @@ export default function Dashboard() {
                   <p className="text-sm text-gray-600">{project.category}</p>
                 </div>
                 <div className="flex gap-2">
-                  <a
-                    href={project.live_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:text-blue-700"
-                  >
-                    <FiEye />
-                  </a>
+                  {project.live_url && (
+                    <a
+                      href={project.live_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-700"
+                    >
+                      <FiEye />
+                    </a>
+                  )}
                   <button
                     onClick={() => {
                       setSelectedProject(project);

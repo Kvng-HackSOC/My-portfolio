@@ -77,6 +77,8 @@ export default function ParticleNetwork({ containerId }: ParticleNetworkProps) {
     let mouseY = 0;
     
     function onMouseMove(event: MouseEvent) {
+      if (!container) return;
+      
       // Calculate mouse position relative to the container
       const rect = container.getBoundingClientRect();
       mouseX = ((event.clientX - rect.left) / rect.width) * 2 - 1;
@@ -87,6 +89,8 @@ export default function ParticleNetwork({ containerId }: ParticleNetworkProps) {
     
     // Handle resize
     function handleResize() {
+      if (!container) return;
+      
       const newRect = container.getBoundingClientRect();
       camera.aspect = newRect.width / newRect.height;
       camera.updateProjectionMatrix();

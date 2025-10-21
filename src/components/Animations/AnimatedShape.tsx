@@ -106,6 +106,9 @@ export default function AnimatedShape({ containerId }: AnimatedShapeProps) {
     let mouseY = 0;
     
     function onMouseMove(event: MouseEvent) {
+      // Add null check for container
+      if (!container) return;
+      
       // Calculate mouse position relative to the container
       const rect = container.getBoundingClientRect();
       mouseX = ((event.clientX - rect.left) / rect.width) * 2 - 1;
@@ -116,6 +119,8 @@ export default function AnimatedShape({ containerId }: AnimatedShapeProps) {
     
     // Handle resize
     function handleResize() {
+      if (!container) return;
+      
       const newRect = container.getBoundingClientRect();
       camera.aspect = newRect.width / newRect.height;
       camera.updateProjectionMatrix();

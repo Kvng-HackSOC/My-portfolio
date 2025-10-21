@@ -1,12 +1,12 @@
 # Use the official Node.js 18 Alpine image as the base
-FROM node:18-alpine
+FROM --platform=linux/amd64 node:18-alpine
 
 # Set working directory
 WORKDIR /app
 
 # Install dependencies first (for better caching)
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm ci
 
 # Copy source code
 COPY . .

@@ -11,15 +11,16 @@ interface NewProjectFormProps {
 
 export default function NewProjectForm({ project, onSave, onCancel }: NewProjectFormProps) {
   const [formData, setFormData] = useState({
-    title: project?.title || '',
-    description: project?.description || '',
+    name: project?.name || '',
+    short_description: project?.short_description || '',
+    long_description: project?.long_description || '',
     category: project?.category || '',
     technologies: project?.technologies || [],
-    image: project?.image || '',
-    video: project?.video || '',
-    liveUrl: project?.liveUrl || '',
-    githubUrl: project?.githubUrl || '',
-    featured: project?.featured || false,
+    thumbnail_url: project?.thumbnail_url || '',
+    video_url: project?.video_url || '',
+    live_url: project?.live_url || '',
+    github_url: project?.github_url || '',
+    is_featured: project?.is_featured || false,
   });
 
   const [techInput, setTechInput] = useState('');
@@ -61,21 +62,32 @@ export default function NewProjectForm({ project, onSave, onCancel }: NewProject
 
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-1">Title</label>
+          <label className="block text-sm font-medium mb-1">Name</label>
           <input
             type="text"
-            value={formData.title}
-            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             className="w-full border rounded px-3 py-2"
             required
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Description</label>
+          <label className="block text-sm font-medium mb-1">Short Description</label>
           <textarea
-            value={formData.description}
-            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            value={formData.short_description}
+            onChange={(e) => setFormData({ ...formData, short_description: e.target.value })}
+            className="w-full border rounded px-3 py-2"
+            rows={2}
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">Long Description</label>
+          <textarea
+            value={formData.long_description}
+            onChange={(e) => setFormData({ ...formData, long_description: e.target.value })}
             className="w-full border rounded px-3 py-2"
             rows={4}
             required
@@ -139,24 +151,24 @@ export default function NewProjectForm({ project, onSave, onCancel }: NewProject
 
         <div>
           <label className="block text-sm font-medium mb-1">
-            Project Image URL
+            Thumbnail Image URL
           </label>
           <input
             type="url"
-            value={formData.image}
-            onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+            value={formData.thumbnail_url}
+            onChange={(e) => setFormData({ ...formData, thumbnail_url: e.target.value })}
             className="w-full border rounded px-3 py-2"
             placeholder="https://example.com/image.jpg"
           />
           <p className="text-xs text-gray-500 mt-1">
             Use image URLs from Unsplash, Pexels, Imgur, or any direct image link
           </p>
-          {formData.image && (
+          {formData.thumbnail_url && (
             <div className="mt-2">
               <p className="text-sm font-medium mb-1">Preview:</p>
-              <img 
-                src={formData.image} 
-                alt="Project preview" 
+              <img
+                src={formData.thumbnail_url}
+                alt="Project preview"
                 className="w-32 h-32 object-cover rounded"
                 onError={(e) => {
                   e.currentTarget.src = 'https://via.placeholder.com/128x128?text=Invalid+URL';
@@ -172,8 +184,8 @@ export default function NewProjectForm({ project, onSave, onCancel }: NewProject
           </label>
           <input
             type="url"
-            value={formData.video}
-            onChange={(e) => setFormData({ ...formData, video: e.target.value })}
+            value={formData.video_url}
+            onChange={(e) => setFormData({ ...formData, video_url: e.target.value })}
             className="w-full border rounded px-3 py-2"
             placeholder="https://youtube.com/watch?v=... or https://vimeo.com/..."
           />
@@ -186,8 +198,8 @@ export default function NewProjectForm({ project, onSave, onCancel }: NewProject
           <label className="block text-sm font-medium mb-1">Live Demo URL</label>
           <input
             type="url"
-            value={formData.liveUrl}
-            onChange={(e) => setFormData({ ...formData, liveUrl: e.target.value })}
+            value={formData.live_url}
+            onChange={(e) => setFormData({ ...formData, live_url: e.target.value })}
             className="w-full border rounded px-3 py-2"
             placeholder="https://your-project.com"
           />
@@ -197,8 +209,8 @@ export default function NewProjectForm({ project, onSave, onCancel }: NewProject
           <label className="block text-sm font-medium mb-1">GitHub URL</label>
           <input
             type="url"
-            value={formData.githubUrl}
-            onChange={(e) => setFormData({ ...formData, githubUrl: e.target.value })}
+            value={formData.github_url}
+            onChange={(e) => setFormData({ ...formData, github_url: e.target.value })}
             className="w-full border rounded px-3 py-2"
             placeholder="https://github.com/username/repo"
           />
@@ -208,8 +220,8 @@ export default function NewProjectForm({ project, onSave, onCancel }: NewProject
           <label className="flex items-center gap-2">
             <input
               type="checkbox"
-              checked={formData.featured}
-              onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
+              checked={formData.is_featured}
+              onChange={(e) => setFormData({ ...formData, is_featured: e.target.checked })}
               className="rounded"
             />
             <span className="text-sm font-medium">Featured Project</span>
