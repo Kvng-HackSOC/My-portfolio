@@ -21,7 +21,7 @@ export default function ProjectsPage() {
         github_url: 'https://github.com/Kvng-HackSOC/WellnessConnect',
         live_url: '',
         video_url: '',
-        thumbnail_url: 'https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lZGljYWx8ZW58MHx8MHx8fDA%3D', // Healthcare/medical themed image
+        thumbnail_url: 'https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lZGljYWx8ZW58MHx8MHx8fDA%3D',
         category: 'Healthcare',
         is_featured: true,
         created_at: '2024-01-15',
@@ -37,7 +37,7 @@ export default function ProjectsPage() {
         github_url: 'https://github.com/Kvng-HackSOC/MediaFinder',
         live_url: '',
         video_url: '',
-        thumbnail_url: 'https://images.unsplash.com/photo-1559526324-c1f275fbfa32?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lZGlhfGVufDB8fDB8fHww', // Technology/media themed image
+        thumbnail_url: 'https://images.unsplash.com/photo-1559526324-c1f275fbfa32?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lZGlhfGVufDB8fDB8fHww',
         category: 'Media & Entertainment',
         is_featured: true,
         created_at: '2024-02-01',
@@ -53,7 +53,7 @@ export default function ProjectsPage() {
         github_url: 'https://github.com/Kvng-HackSOC/Distributed-Log-File-Analyzer',
         live_url: '',
         video_url: '',
-        thumbnail_url: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&h=300&fit=crop&crop=center', // Data/analytics themed image
+        thumbnail_url: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&h=300&fit=crop&crop=center',
         category: 'DevOps & Infrastructure',
         is_featured: true,
         created_at: '2024-02-15',
@@ -69,7 +69,7 @@ export default function ProjectsPage() {
         github_url: 'https://github.com/Kvng-HackSOC/Sakila-DVD-Rental-API',
         live_url: '',
         video_url: '',
-        thumbnail_url: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop&crop=center', // Database/API themed image
+        thumbnail_url: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop&crop=center',
         category: 'Backend Development',
         is_featured: false,
         created_at: '2024-03-01',
