@@ -1,29 +1,30 @@
-# Multi-stage Dockerfile for production optimization
 FROM node:18-alpine AS base
 
-# Install dependencies only when needed
 FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Install dependencies based on the preferred package manager
 COPY package.json package-lock.json* ./
 RUN npm ci
 
-# Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Next.js collects completely anonymous telemetry data about general usage.
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Don't set build args as env vars - Railway will provide them at runtime
+ENV DATABASE_URL="mysql://build:build@localhost:3306/build"
+ENV JWT_SECRET="build-time-secret-will-be-replaced"
+ENV EMAIL_USER="build@example.com"
+ENV EMAIL_PASS="build-password"
+ENV CLOUDINARY_CLOUD_NAME="build-cloud"
+ENV CLOUDINARY_API_KEY="build-api-key"
+ENV CLOUDINARY_API_SECRET="build-api-secret"
+ENV NEXT_PUBLIC_API_URL="http://localhost:3000"
 
 RUN npm run build
 
-# Production image, copy all the files and run next
 FROM base AS runner
 WORKDIR /app
 
@@ -35,11 +36,9 @@ RUN adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/public ./public
 
-# Set the correct permission for prerender cache
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
 
-# Automatically leverage output traces to reduce image size
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
@@ -50,87 +49,4 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-# server.js is created by next build from the standalone output
 CMD ["node", "server.js"]
-```
-
----
-
-### 5. **Create `.dockerignore`**
-```
-node_modules
-npm-debug.log
-.git
-.gitignore
-.env
-.env.local
-.env.*.local
-README.md
-.vscode
-.idea
-*.md
-.DS_Store
-.next
-out
-coverage
-*.log
-.eslintcache
-```
-
----
-
-### 6. **Create `.railwayignore`**
-```
-node_modules
-.git
-.env
-*.log
-.next
-out
-.vscode
-.idea
-*.md
-.DS_Store
-coverage
-```
-
----
-
-### 7. **Update `.gitignore`** (if not already there)
-
-Add these lines if they're not already in your .gitignore:
-```
-# dependencies
-node_modules
-/.pnp
-.pnp.js
-
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# local env files
-.env*.local
-.env
-
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
