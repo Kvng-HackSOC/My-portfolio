@@ -2,9 +2,6 @@ import { z } from 'zod';
 
 // Environment variable validation schema
 const envSchema = z.object({
-  // Database
-  DATABASE_URL: z.string().url('DATABASE_URL must be a valid URL'),
-
   // Authentication
   JWT_SECRET: z.string().min(32, 'JWT_SECRET must be at least 32 characters long'),
 
@@ -31,9 +28,6 @@ try {
 
 // Export validated environment variables
 export const config = {
-  database: {
-    url: env.DATABASE_URL,
-  },
   auth: {
     jwtSecret: env.JWT_SECRET,
   },
@@ -52,6 +46,5 @@ export const config = {
 // Type exports
 export type Config = typeof config;
 export type AppConfig = typeof config.app;
-export type DatabaseConfig = typeof config.database;
 export type AuthConfig = typeof config.auth;
 export type EmailConfig = typeof config.email;

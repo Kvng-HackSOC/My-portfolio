@@ -20,8 +20,6 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # Don't set build args as env vars - Railway will provide them at runtime
-# Just set a dummy DATABASE_URL for build to prevent errors
-ENV DATABASE_URL="mysql://dummy:dummy@localhost:3306/dummy"
 
 RUN npm run build
 
