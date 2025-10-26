@@ -3,18 +3,12 @@ FROM node:18-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
-RUN \
-  if [ -f yarn.lock ]; then yarn --frozen-lockfile --production; \
-  elif [ -f package-lock.json ]; then npm ci; \
-  elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i --frozen-lockfile; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+COPY package.json package-lock.json* ./
+RUN npm ci
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -23,29 +17,11 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Next.js collects completely anonymous telemetry data about general usage.
-# Learn more here: https://nextjs.org/telemetry
-# Uncomment the following line in case you want to disable telemetry during the build.
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_TELEMETRY_DISABLED=1
 
-# Accept build arguments
-ARG DATABASE_URL
-ARG JWT_SECRET
-ARG EMAIL_USER
-ARG EMAIL_PASS
-ARG CLOUDINARY_CLOUD_NAME
-ARG CLOUDINARY_API_KEY
-ARG CLOUDINARY_API_SECRET
-ARG NEXT_PUBLIC_API_URL
-
-# Set them as environment variables during build
-ENV DATABASE_URL=$DATABASE_URL
-ENV JWT_SECRET=$JWT_SECRET
-ENV EMAIL_USER=$EMAIL_USER
-ENV EMAIL_PASS=$EMAIL_PASS
-ENV CLOUDINARY_CLOUD_NAME=$CLOUDINARY_CLOUD_NAME
-ENV CLOUDINARY_API_KEY=$CLOUDINARY_API_KEY
-ENV CLOUDINARY_API_SECRET=$CLOUDINARY_API_SECRET
-ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+# Don't set build args as env vars - Railway will provide them at runtime
+# Just set a dummy DATABASE_URL for build to prevent errors
+ENV DATABASE_URL="mysql://dummy:dummy@localhost:3306/dummy"
 
 RUN npm run build
 
@@ -53,9 +29,8 @@ RUN npm run build
 FROM base AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
-# Uncomment the following line in case you want to disable telemetry during runtime.
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
@@ -67,7 +42,6 @@ RUN mkdir .next
 RUN chown nextjs:nodejs .next
 
 # Automatically leverage output traces to reduce image size
-# https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
@@ -75,10 +49,90 @@ USER nextjs
 
 EXPOSE 3000
 
-ENV PORT 3000
-# set hostname to localhost
-ENV HOSTNAME "0.0.0.0"
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
 
 # server.js is created by next build from the standalone output
-# https://nextjs.org/docs/pages/api-reference/next-config-js/output
 CMD ["node", "server.js"]
+```
+
+---
+
+### 5. **Create `.dockerignore`**
+```
+node_modules
+npm-debug.log
+.git
+.gitignore
+.env
+.env.local
+.env.*.local
+README.md
+.vscode
+.idea
+*.md
+.DS_Store
+.next
+out
+coverage
+*.log
+.eslintcache
+```
+
+---
+
+### 6. **Create `.railwayignore`**
+```
+node_modules
+.git
+.env
+*.log
+.next
+out
+.vscode
+.idea
+*.md
+.DS_Store
+coverage
+```
+
+---
+
+### 7. **Update `.gitignore`** (if not already there)
+
+Add these lines if they're not already in your .gitignore:
+```
+# dependencies
+node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env files
+.env*.local
+.env
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts

@@ -84,7 +84,7 @@ const Hero = () => {
             className="text-slate-600 mb-12 max-w-2xl mx-auto text-lg leading-relaxed"
           >
             Crafting secure, scalable solutions with modern technologies.
-            Specializing in web development and cybersecurity best practices.
+            Specializing in entire software engineering lifecyle, development and cybersecurity best practices.
           </motion.p>
 
           <motion.div
